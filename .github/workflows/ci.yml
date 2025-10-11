@@ -921,13 +921,17 @@ jobs:
           $installdir = "$Env:FRIDA_PREFIX\prebuilds"
           $Env:FRIDA_DEPS = "$pwd\deps"
           $Env:PKG_CONFIG_PATH = "$Env:FRIDA_PREFIX\lib\pkgconfig"
-          function Run() {
-            $program = $args[0]
-            $arglist = $args | Select-Object -Skip 1
-            & $program $arglist
+          function Run {
+            param(
+              [Parameter(Mandatory)]
+              [string] $Program,
+              [Parameter(ValueFromRemainingArguments = $true)]
+              [string[]] $Args
+            )
+            & $Program @Args
             $result = $LASTEXITCODE
             if ($result -ne 0) {
-              throw "'$program $arglist' failed with exit status $result"
+              throw "'$Program $($Args -join ' ')' failed with exit status $result"
             }
           }
           Run python .\tools\ensure-submodules.py frida-node
@@ -937,6 +941,7 @@ jobs:
               --prefix=$Env:FRIDA_PREFIX `
               --host=windows-${{ matrix.arch }}
           Run .\make prebuild
+
           New-Item -ItemType Directory -Path $installdir
           Copy-Item .\build\*.tar.gz -Destination $installdir
       - name: Upload Node.js bindings
@@ -1085,13 +1090,17 @@ jobs:
           $installdir = "$Env:FRIDA_PREFIX\prebuilds"
           $Env:FRIDA_DEPS = "$pwd\deps"
           $Env:PKG_CONFIG_PATH = "$Env:FRIDA_PREFIX\lib\pkgconfig"
-          function Run() {
-            $program = $args[0]
-            $arglist = $args | Select-Object -Skip 1
-            & $program $arglist
+          function Run {
+            param(
+              [Parameter(Mandatory)]
+              [string] $Program,
+              [Parameter(ValueFromRemainingArguments = $true)]
+              [string[]] $Args
+            )
+            & $Program @Args
             $result = $LASTEXITCODE
             if ($result -ne 0) {
-              throw "'$program $arglist' failed with exit status $result"
+              throw "'$Program $($Args -join ' ')' failed with exit status $result"
             }
           }
           Run python .\tools\ensure-submodules.py frida-node
