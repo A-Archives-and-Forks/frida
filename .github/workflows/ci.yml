@@ -924,14 +924,14 @@ jobs:
           function Run {
             param(
               [Parameter(Mandatory)]
-              [string] $Program,
+              [string] $Exe,
               [Parameter(ValueFromRemainingArguments = $true)]
-              [string[]] $Args
+              [string[]] $Argv
             )
-            & $Program @Args
-            $result = $LASTEXITCODE
-            if ($result -ne 0) {
-              throw "'$Program $($Args -join ' ')' failed with exit status $result"
+            & $Exe @Argv
+            $code = $LASTEXITCODE
+            if ($code -ne 0) {
+              throw "'$Exe $($Argv -join ' ')' failed with exit status $code"
             }
           }
           Run python .\tools\ensure-submodules.py frida-node
@@ -941,7 +941,6 @@ jobs:
               --prefix=$Env:FRIDA_PREFIX `
               --host=windows-${{ matrix.arch }}
           Run .\make prebuild
-
           New-Item -ItemType Directory -Path $installdir
           Copy-Item .\build\*.tar.gz -Destination $installdir
       - name: Upload Node.js bindings
@@ -1093,14 +1092,14 @@ jobs:
           function Run {
             param(
               [Parameter(Mandatory)]
-              [string] $Program,
+              [string] $Exe,
               [Parameter(ValueFromRemainingArguments = $true)]
-              [string[]] $Args
+              [string[]] $Argv
             )
-            & $Program @Args
-            $result = $LASTEXITCODE
-            if ($result -ne 0) {
-              throw "'$Program $($Args -join ' ')' failed with exit status $result"
+            & $Exe @Argv
+            $code = $LASTEXITCODE
+            if ($code -ne 0) {
+              throw "'$Exe $($Argv -join ' ')' failed with exit status $code"
             }
           }
           Run python .\tools\ensure-submodules.py frida-node
